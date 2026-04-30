@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд ЗАГС</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fbff;
+      --text: #172033;
+      --muted: #6b7688;
+      --accent: #4f7cff;
+      --accent-2: #8b5cf6;
+      --green: #20b486;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --border: #e3e8f2;
+      --shadow: 0 18px 50px rgba(28, 39, 70, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top left, #eef4ff 0, #f4f7fb 36%, #eef2f8 100%);
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+    }
+
+    .sidebar {
+      padding: 28px 20px;
+      background: #121a2e;
+      color: white;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      box-shadow: 0 12px 30px rgba(79, 124, 255, 0.35);
+    }
+
+    .logo-title {
+      font-size: 17px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .logo-subtitle {
+      font-size: 12px;
+      color: #9da9c2;
+      margin-top: 3px;
+    }
+
+    .nav-section {
+      margin-top: 24px;
+    }
+
+    .nav-title {
+      color: #77839f;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 10px 10px;
+    }
+
+    .nav-item {
+      padding: 13px 14px;
+      border-radius: 14px;
+      color: #c7d1e7;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .main {
+      padding: 28px;
+      overflow: auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .filter {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      min-width: 150px;
+      box-shadow: 0 8px 25px rgba(28, 39, 70, 0.04);
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .filter-value {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(227, 232, 242, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .kpi {
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      right: -42px;
+      top: -42px;
+      border-radius: 50%;
+      background: rgba(79, 124, 255, 0.08);
+    }
+
+    .kpi-name {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .kpi-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 12px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #edfdf6;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .kpi-delta.warn {
+      background: #fff7e6;
+      color: var(--orange);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .chart-card {
+      padding: 22px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .card-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bar-chart {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+      gap: 10px;
+      height: 260px;
+      padding: 16px 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 34px;
+      border-radius: 12px 12px 4px 4px;
+      background: linear-gradient(180deg, var(--accent), #b8c7ff);
+      min-height: 24px;
+      transition: 0.2s ease;
+    }
+
+    .bar.secondary {
+      background: linear-gradient(180deg, var(--accent-2), #d8c8ff);
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .donut-box {
+      display: grid;
+      place-items: center;
+      padding: 10px 0 18px;
+    }
+
+    .donut {
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 0 42%, var(--green) 42% 68%, var(--orange) 68% 86%, var(--accent-2) 86% 100%);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+    }
+
+    .donut::after {
+      content: "68%";
+      position: absolute;
+      inset: 38px;
+      background: white;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      font-weight: 850;
+      letter-spacing: -0.05em;
+    }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .legend-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.orange { background: var(--orange); }
+    .dot.purple { background: var(--accent-2); }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 0 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table td {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 750;
+      background: #edfdf6;
+      color: var(--green);
+    }
+
+    .status.warn {
+      background: #fff7e6;
+      color: var(--orange);
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      background: var(--panel-soft);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .mini-name {
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .mini-desc {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .mini-value {
+      font-weight: 850;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .heat-cell {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background: #dbe5ff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 750;
+      color: #345099;
+    }
+
+    .heat-cell.h2 { background: #b9c9ff; }
+    .heat-cell.h3 { background: #879fff; color: white; }
+    .heat-cell.h4 { background: #4f7cff; color: white; }
+
+    @media (max-width: 1200px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .content-grid, .bottom-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .main { padding: 18px; }
+      .topbar { flex-direction: column; }
+      .filters { justify-content: flex-start; }
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-mark">З</div>
+        <div>
+          <div class="logo-title">Городской ЗАГС</div>
+          <div class="logo-subtitle">Статистический центр</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Аналитика</div>
+        <div class="nav-item active">📊 Обзор</div>
+        <div class="nav-item">💍 Браки</div>
+        <div class="nav-item">👶 Рождения</div>
+        <div class="nav-item">📄 Акты</div>
+        <div class="nav-item">🧭 Районы</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Управление</div>
+        <div class="nav-item">🗂 Реестры</div>
+        <div class="nav-item">⚙️ Настройки</div>
+        <div class="nav-item">📥 Экспорт</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div>
+          <h1>Дашборд ЗАГС: демография и акты гражданского состояния</h1>
+          <div class="subtitle">Оперативная статистика по заявлениям, регистрациям, нагрузке отделений и динамике ключевых событий.</div>
+        </div>
+
+        <div class="filters">
+          <div class="filter">
+            <span class="filter-label">Период</span>
+            <span class="filter-value">Янв–Дек 2026</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Город</span>
+            <span class="filter-value">Тамбов</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Район</span>
+            <span class="filter-value">Все районы</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="card kpi">
+          <div class="kpi-name">Зарегистрировано рождений</div>
+          <div class="kpi-value">18 426</div>
+          <div class="kpi-delta">▲ 7,4% к прошлому году</div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-name">Заключено браков</div>
+          <div class="kpi-value">9 812</div>
+          <div class="kpi-delta">▲ 3,1% к прошлому году</div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-name">Расторгнуто браков</div>
+          <div class="kpi-value">2 146</div>
+          <div class="kpi-delta warn">▼ 1,8% к прошлому году</div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-name">Средний срок обработки</div>
+          <div class="kpi-value">1,8 дн.</div>
+          <div class="kpi-delta">▲ SLA 96%</div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="card chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Динамика регистраций по месяцам</div>
+              <div class="card-note">Рождения и браки, количество актовых записей</div>
+            </div>
+            <div class="card-note">2026 год</div>
+          </div>
+
+          <div class="bar-chart">
+            <div class="bar-wrap"><div class="bar" style="height: 58%"></div><div class="bar-label">Янв</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 47%"></div><div class="bar-label">Фев</div></div>
+            <div class="bar-wrap"><div class="bar" style="height: 62%"></div><div class="bar-label">Мар</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 55%"></div><div class="bar-label">Апр</div></div>
+            <div class="bar-wrap"><div class="bar" style="height: 70%"></div><div class="bar-label">Май</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 80%"></div><div class="bar-label">Июн</div></div>
+            <div class="bar-wrap"><div class="bar" style="height: 92%"></div><div class="bar-label">Июл</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 88%"></div><div class="bar-label">Авг</div></div>
+            <div class="bar-wrap"><div class="bar" style="height: 76%"></div><div class="bar-label">Сен</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 66%"></div><div class="bar-label">Окт</div></div>
+            <div class="bar-wrap"><div class="bar" style="height: 59%"></div><div class="bar-label">Ноя</div></div>
+            <div class="bar-wrap"><div class="bar secondary" style="height: 64%"></div><div class="bar-label">Дек</div></div>
+          </div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Структура обращений</div>
+              <div class="card-note">По типам услуг</div>
+            </div>
+          </div>
+
+          <div class="donut-box">
+            <div class="donut"></div>
+          </div>
+
+          <div class="legend">
+            <div class="legend-row"><span class="legend-left"><span class="dot"></span>Рождения</span><b>42%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot green"></span>Браки</span><b>26%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot orange"></span>Расторжения</span><b>18%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot purple"></span>Прочие акты</span><b>14%</b></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="card chart-card">
+          <div class="card-header">
+            <div class="card-title">Нагрузка по отделениям</div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Отделение</th>
+                <th>Заявлений</th>
+                <th>SLA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Есильский район</td><td>4 238</td><td><span class="status">98%</span></td></tr>
+              <tr><td>Алматинский район</td><td>3 916</td><td><span class="status">96%</span></td></tr>
+              <tr><td>Сарыаркинский район</td><td>3 572</td><td><span class="status warn">89%</span></td></tr>
+              <tr><td>Байконурский район</td><td>2 884</td><td><span class="status">95%</span></td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="card chart-card">
+          <div class="card-header">
+            <div class="card-title">Контрольные показатели</div>
+          </div>
+          <div class="mini-list">
+            <div class="mini-item">
+              <div><div class="mini-name">Заявления онлайн</div><div class="mini-desc">Доля электронных обращений</div></div>
+              <div class="mini-value">73%</div>
+            </div>
+            <div class="mini-item">
+              <div><div class="mini-name">Возвраты на доработку</div><div class="mini-desc">Ошибки в документах</div></div>
+              <div class="mini-value">4,6%</div>
+            </div>
+            <div class="mini-item">
+              <div><div class="mini-name">Пиковая нагрузка</div><div class="mini-desc">Среда, 11:00–13:00</div></div>
+              <div class="mini-value">1 240</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Календарь обращений</div>
+              <div class="card-note">Интенсивность по дням недели</div>
+            </div>
+          </div>
+          <div class="heatmap">
+            <div class="heat-cell">Пн</div><div class="heat-cell h2">Вт</div><div class="heat-cell h4">Ср</div><div class="heat-cell h3">Чт</div><div class="heat-cell h2">Пт</div><div class="heat-cell">Сб</div><div class="heat-cell">Вс</div>
+            <div class="heat-cell h2">420</div><div class="heat-cell h3">510</div><div class="heat-cell h4">690</div><div class="heat-cell h3">570</div><div class="heat-cell h2">460</div><div class="heat-cell">210</div><div class="heat-cell">80</div>
+            <div class="heat-cell h2">390</div><div class="heat-cell h3">540</div><div class="heat-cell h4">720</div><div class="heat-cell h2">480</div><div class="heat-cell h3">530</div><div class="heat-cell">240</div><div class="heat-cell">90</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
