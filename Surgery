@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Хирургическое отделение — операционный центр</title>
+
+<style>
+:root {
+  --bg: #eef5f6;
+  --panel: #ffffff;
+  --panel-2: #f7fbfb;
+  --text: #10202a;
+  --muted: #657783;
+  --border: #dbe8ea;
+  --teal: #078b8f;
+  --teal-dark: #05666a;
+  --teal-soft: #e1f5f5;
+  --cyan: #27b4c8;
+  --mint: #1fb984;
+  --mint-soft: #e5f8f0;
+  --amber: #f29d27;
+  --amber-soft: #fff3df;
+  --rose: #d94b5c;
+  --rose-soft: #fff0f2;
+  --ink: #0f2530;
+  --shadow: 0 18px 45px rgba(14, 54, 66, 0.08);
+  --radius: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 5% 0%, rgba(39, 180, 200, .18) 0, transparent 34%),
+    radial-gradient(circle at 95% 10%, rgba(31, 185, 132, .14) 0, transparent 32%),
+    linear-gradient(180deg, #f8fcfc 0%, var(--bg) 100%);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.command-bar {
+  background: rgba(255, 255, 255, .86);
+  border: 1px solid rgba(219, 232, 234, .95);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+  position: sticky;
+  top: 14px;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 255px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 950;
+  box-shadow: 0 14px 28px rgba(7, 139, 143, .25);
+}
+
+.brand-title {
+  font-weight: 950;
+  font-size: 16px;
+  letter-spacing: -.02em;
+}
+
+.brand-subtitle {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 10px 13px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.nav-tab.active {
+  background: var(--teal-soft);
+  color: var(--teal-dark);
+  border-color: #b9e4e5;
+}
+
+.shift-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 0 8px rgba(31, 185, 132, .12);
+}
+
+.shift-title {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.shift-value {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.main {
+  padding: 24px 4px 0;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.hero-panel {
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--ink), #0a5d63 62%, #0b8993 100%);
+  color: white;
+  padding: 26px;
+  box-shadow: 0 24px 60px rgba(15, 37, 48, .22);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-panel::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  bottom: -140px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  border: 42px solid rgba(255,255,255,.08);
+}
+
+.eyebrow {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.08;
+  letter-spacing: -.045em;
+  max-width: 760px;
+}
+
+.hero-desc {
+  margin-top: 12px;
+  color: rgba(255,255,255,.76);
+  font-size: 14px;
+  max-width: 700px;
+  line-height: 1.55;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-metric {
+  padding: 15px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.hero-label {
+  color: rgba(255,255,255,.68);
+  font-size: 12px;
+}
+
+.hero-value {
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 950;
+  letter-spacing: -.04em;
+}
+
+.filter-panel {
+  background: rgba(255,255,255,.88);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.filter-title {
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: -.02em;
+  margin-bottom: 14px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.filter {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.filter-label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.filter-value {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.card {
+  background: rgba(255,255,255,.9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.kpi-card {
+  padding: 17px;
+  border-top: 4px solid var(--teal);
+}
+
+.kpi-card.warning { border-top-color: var(--amber); }
+.kpi-card.danger { border-top-color: var(--rose); }
+.kpi-card.success { border-top-color: var(--mint); }
+
+.kpi-title {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.kpi-value {
+  margin-top: 7px;
+  font-size: 29px;
+  font-weight: 950;
+  letter-spacing: -.05em;
+}
+
+.kpi-note {
+  margin-top: 9px;
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 12px;
+  font-weight: 850;
+  background: var(--mint-soft);
+  color: var(--mint);
+}
+
+.kpi-note.warn {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.kpi-note.danger {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.grid-primary {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.grid-secondary {
+  display: grid;
+  grid-template-columns: .95fr 1.05fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.grid-tertiary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  padding: 22px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -.025em;
+}
+
+.panel-note {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: #eef6f7;
+  border: 1px solid var(--border);
+  gap: 4px;
+}
+
+.segmented span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 850;
+  color: var(--muted);
+}
+
+.segmented .active {
+  background: white;
+  color: var(--teal-dark);
+  box-shadow: 0 4px 12px rgba(14,54,66,.08);
+}
+
+.line-chart {
+  height: 285px;
+  position: relative;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: repeating-linear-gradient(to top, transparent 0 55px, #e9f1f2 56px);
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.line-chart svg {
+  width: 100%;
+  height: 100%;
+}
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.months span { text-align: center; }
+
+.or-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.or-card {
+  padding: 15px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.or-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.or-name {
+  font-weight: 950;
+}
+
+.or-status {
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: var(--mint-soft);
+  color: var(--mint);
+}
+
+.or-status.busy {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.or-status.critical {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.progress {
+  height: 9px;
+  border-radius: 999px;
+  background: #e3edef;
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--cyan));
+}
+
+.or-meta {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.donut-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.donut {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: conic-gradient(var(--teal) 0 34%, var(--mint) 34% 56%, var(--amber) 56% 74%, var(--cyan) 74% 90%, var(--rose) 90% 100%);
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+}
+
+.donut::after {
+  content: "72%";
+  position: absolute;
+  inset: 38px;
+  background: white;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 950;
+  letter-spacing: -.05em;
+}
+
+.legend {
+  display: grid;
+  gap: 10px;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.legend-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--teal);
+}
+
+.dot.mint { background: var(--mint); }
+.dot.amber { background: var(--amber); }
+.dot.cyan { background: var(--cyan); }
+.dot.rose { background: var(--rose); }
+
+.heatmap {
+  display: grid;
+  grid-template-columns: 90px repeat(7, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.heat-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.heat-cell {
+  min-height: 36px;
+  border-radius: 10px;
+  background: #dff1f2;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 900;
+  color: #0b686d;
+}
+
+.h2 { background: #bde5e7; }
+.h3 { background: #7fd0d5; color: #073a3d; }
+.h4 { background: #27b4c8; color: white; }
+.h5 { background: #078b8f; color: white; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  text-align: left;
+  color: var(--muted);
+  padding: 0 0 11px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  background: var(--mint-soft);
+  color: var(--mint);
+}
+
+.status.warn {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.status.danger {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.mini-list {
+  display: grid;
+  gap: 12px;
+}
+
+.mini-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.mini-title {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.mini-desc {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.mini-value {
+  font-size: 18px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+@media (max-width: 1250px) {
+  .command-bar { grid-template-columns: 1fr; }
+  .nav-tabs { justify-content: flex-start; }
+  .shift-status { justify-content: flex-start; }
+  .hero, .grid-primary, .grid-secondary, .grid-tertiary { grid-template-columns: 1fr; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .donut-layout { grid-template-columns: 1fr; justify-items: center; }
+}
+
+@media (max-width: 720px) {
+  .app-shell { padding: 10px; }
+  .hero-metrics, .filter-grid, .kpi-strip, .or-board { grid-template-columns: 1fr; }
+  h1 { font-size: 27px; }
+  .heatmap { grid-template-columns: 70px repeat(7, 1fr); }
+}
+</style>
+</head>
+
+<body>
+<div class="app-shell">
+  <header class="command-bar">
+    <div class="brand">
+      <div class="brand-mark">✚</div>
+      <div>
+        <div class="brand-title">Surgery Control Center</div>
+        <div class="brand-subtitle">Хирургическое отделение · операционный контур</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab active">Обзор</button>
+      <button class="nav-tab">Операционные</button>
+      <button class="nav-tab">Коечный фонд</button>
+      <button class="nav-tab">Осложнения</button>
+      <button class="nav-tab">Врачи</button>
+      <button class="nav-tab">Экспорт</button>
+    </nav>
+
+    <div class="shift-status">
+      <span class="pulse"></span>
+      <div>
+        <div class="shift-title">Текущая смена</div>
+        <div class="shift-value">День · 08:00–20:00</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <article class="hero-panel">
+        <div class="eyebrow">● live-мониторинг отделения</div>
+        <h1>Операционная загрузка, качество хирургической помощи и контроль рисков</h1>
+        <div class="hero-desc">Дашборд объединяет поток пациентов, плановые и экстренные вмешательства, загрузку операционных, осложнения, летальность и состояние коечного фонда.</div>
+
+        <div class="hero-metrics">
+          <div class="hero-metric">
+            <div class="hero-label">Активные операции</div>
+            <div class="hero-value">7</div>
+          </div>
+          <div class="hero-metric">
+            <div class="hero-label">В листе ожидания</div>
+            <div class="hero-value">186</div>
+          </div>
+          <div class="hero-metric">
+            <div class="hero-label">Свободные койки</div>
+            <div class="hero-value">18</div>
+          </div>
+          <div class="hero-metric">
+            <div class="hero-label">SLA подготовки</div>
+            <div class="hero-value">94%</div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="filter-panel">
+        <div class="filter-title">Параметры анализа</div>
+        <div class="filter-grid">
+          <div class="filter">
+            <span class="filter-label">Дата</span>
+            <span class="filter-value">01–30 апр 2026</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Врач</span>
+            <span class="filter-value">Все хирурги</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Тип операции</span>
+            <span class="filter-value">Все типы</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Срочность</span>
+            <span class="filter-value">План + экстр.</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Операционная</span>
+            <span class="filter-value">Все залы</span>
+          </div>
+          <div class="filter">
+            <span class="filter-label">Риск ASA</span>
+            <span class="filter-value">I–V</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="kpi-strip">
+      <article class="card kpi-card success">
+        <div class="kpi-title">Операций за период</div>
+        <div class="kpi-value">1 284</div>
+        <div class="kpi-note">▲ 6,8% к марту</div>
+      </article>
+      <article class="card kpi-card warning">
+        <div class="kpi-title">Загрузка операционных</div>
+        <div class="kpi-value">84%</div>
+        <div class="kpi-note warn">Пик: 10:00–14:00</div>
+      </article>
+      <article class="card kpi-card warning">
+        <div class="kpi-title">Послеоперационные осложнения</div>
+        <div class="kpi-value">3,7%</div>
+        <div class="kpi-note warn">+0,4 п.п.</div>
+      </article>
+      <article class="card kpi-card danger">
+        <div class="kpi-title">Летальность</div>
+        <div class="kpi-value">0,8%</div>
+        <div class="kpi-note danger">Контроль риска</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-title">Средний койко-день</div>
+        <div class="kpi-value">5,6</div>
+        <div class="kpi-note">▼ 0,3 дня</div>
+      </article>
+    </section>
+
+    <section class="grid-primary">
+      <article class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Тренд хирургической активности и рисков</div>
+            <div class="panel-note">Операции, осложнения и летальность по месяцам</div>
+          </div>
+          <div class="segmented"><span class="active">Год</span><span>Квартал</span><span>Месяц</span></div>
+        </div>
+
+        <div class="line-chart">
+          <svg viewBox="0 0 900 285" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="area" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#078b8f" stop-opacity=".22"/>
+                <stop offset="100%" stop-color="#078b8f" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="20,205 95,186 170,198 245,155 320,145 395,125 470,105 545,116 620,88 695,99 770,80 860,70 860,285 20,285" fill="url(#area)"/>
+            <polyline points="20,205 95,186 170,198 245,155 320,145 395,125 470,105 545,116 620,88 695,99 770,80 860,70" fill="none" stroke="#078b8f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="20,240 95,234 170,236 245,224 320,222 395,216 470,225 545,212 620,205 695,211 770,203 860,198" fill="none" stroke="#f29d27" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="20,262 95,263 170,260 245,257 320,259 395,255 470,258 545,252 620,251 695,249 770,247 860,245" fill="none" stroke="#d94b5c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="860" cy="70" r="7" fill="#078b8f"/>
+            <circle cx="860" cy="198" r="6" fill="#f29d27"/>
+            <circle cx="860" cy="245" r="6" fill="#d94b5c"/>
+          </svg>
+        </div>
+        <div class="months">
+          <span>Янв</span><span>Фев</span><span>Мар</span><span>Апр</span><span>Май</span><span>Июн</span><span>Июл</span><span>Авг</span><span>Сен</span><span>Окт</span><span>Ноя</span><span>Дек</span>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Операционные залы сейчас</div>
+            <div class="panel-note">Статус, длительность и загрузка</div>
+          </div>
+        </div>
+
+        <div class="or-board">
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-1</div><span class="or-status busy">занят</span></div>
+            <div class="progress"><div style="width: 78%"></div></div>
+            <div class="or-meta">Лапароскопия · 2 ч 10 мин</div>
+          </div>
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-2</div><span class="or-status critical">экстр.</span></div>
+            <div class="progress"><div style="width: 42%"></div></div>
+            <div class="or-meta">Травма · 48 мин</div>
+          </div>
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-3</div><span class="or-status">свободен</span></div>
+            <div class="progress"><div style="width: 8%"></div></div>
+            <div class="or-meta">Подготовка · 12 мин</div>
+          </div>
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-4</div><span class="or-status busy">занят</span></div>
+            <div class="progress"><div style="width: 64%"></div></div>
+            <div class="or-meta">Абдоминальная · 1 ч 35 мин</div>
+          </div>
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-5</div><span class="or-status busy">занят</span></div>
+            <div class="progress"><div style="width: 88%"></div></div>
+            <div class="or-meta">Сосудистая · 3 ч 05 мин</div>
+          </div>
+          <div class="or-card">
+            <div class="or-head"><div class="or-name">OR-6</div><span class="or-status">резерв</span></div>
+            <div class="progress"><div style="width: 20%"></div></div>
+            <div class="or-meta">Стерилизация · 25 мин</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid-secondary">
+      <article class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Структура операций</div>
+            <div class="panel-note">По профилю вмешательства</div>
+          </div>
+        </div>
+
+        <div class="donut-layout">
+          <div class="donut"></div>
+          <div class="legend">
+            <div class="legend-row"><span class="legend-left"><span class="dot"></span>Абдоминальная хирургия</span><b>34%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot mint"></span>Травматология</span><b>22%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot amber"></span>Гнойная хирургия</span><b>18%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot cyan"></span>Сосудистая хирургия</span><b>16%</b></div>
+            <div class="legend-row"><span class="legend-left"><span class="dot rose"></span>Прочие</span><b>10%</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Тепловая карта операционной нагрузки</div>
+            <div class="panel-note">По дням недели и временным слотам</div>
+          </div>
+        </div>
+
+        <div class="heatmap">
+          <div></div><div class="heat-label">Пн</div><div class="heat-label">Вт</div><div class="heat-label">Ср</div><div class="heat-label">Чт</div><div class="heat-label">Пт</div><div class="heat-label">Сб</div><div class="heat-label">Вс</div>
+          <div class="heat-label">08–10</div><div class="heat-cell h2">62</div><div class="heat-cell h3">75</div><div class="heat-cell h4">88</div><div class="heat-cell h3">74</div><div class="heat-cell h2">68</div><div class="heat-cell">35</div><div class="heat-cell">21</div>
+          <div class="heat-label">10–12</div><div class="heat-cell h4">89</div><div class="heat-cell h5">96</div><div class="heat-cell h5">98</div><div class="heat-cell h4">91</div><div class="heat-cell h3">79</div><div class="heat-cell h2">56</div><div class="heat-cell">30</div>
+          <div class="heat-label">12–14</div><div class="heat-cell h4">85</div><div class="heat-cell h4">90</div><div class="heat-cell h5">97</div><div class="heat-cell h4">86</div><div class="heat-cell h3">76</div><div class="heat-cell h2">52</div><div class="heat-cell">28</div>
+          <div class="heat-label">14–16</div><div class="heat-cell h3">72</div><div class="heat-cell h3">78</div><div class="heat-cell h4">83</div><div class="heat-cell h3">77</div><div class="heat-cell h2">64</div><div class="heat-cell">40</div><div class="heat-cell">18</div>
+          <div class="heat-label">16–18</div><div class="heat-cell h2">55</div><div class="heat-cell h2">60</div><div class="heat-cell h3">71</div><div class="heat-cell h2">58</div><div class="heat-cell h2">54</div><div class="heat-cell">32</div><div class="heat-cell">16</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid-tertiary">
+      <article class="card panel">
+        <div class="panel-header"><div class="panel-title">Операционные бригады</div></div>
+        <table class="table">
+          <thead><tr><th>Врач</th><th>Опер.</th><th>Осл.</th><th>SLA</th></tr></thead>
+          <tbody>
+            <tr><td>Иванов А.С.</td><td>148</td><td>2,1%</td><td><span class="status">97%</span></td></tr>
+            <tr><td>Петрова Н.М.</td><td>132</td><td>3,4%</td><td><span class="status">95%</span></td></tr>
+            <tr><td>Садыков Р.К.</td><td>119</td><td>4,8%</td><td><span class="status warn">89%</span></td></tr>
+            <tr><td>Ким В.О.</td><td>104</td><td>1,9%</td><td><span class="status">98%</span></td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card panel">
+        <div class="panel-header"><div class="panel-title">Коечный фонд и очередь</div></div>
+        <div class="mini-list">
+          <div class="mini-item"><div><div class="mini-title">Пациенты в листе ожидания</div><div class="mini-desc">Плановые операции</div></div><div class="mini-value">186</div></div>
+          <div class="mini-item"><div><div class="mini-title">Свободные койки</div><div class="mini-desc">Хирургический профиль</div></div><div class="mini-value">18</div></div>
+          <div class="mini-item"><div><div class="mini-title">Занятость коек</div><div class="mini-desc">Среднее за период</div></div><div class="mini-value">91%</div></div>
+          <div class="mini-item"><div><div class="mini-title">Повторные госпитализации</div><div class="mini-desc">В течение 30 дней</div></div><div class="mini-value">2,9%</div></div>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <div class="panel-header"><div class="panel-title">Операционный контроль</div></div>
+        <table class="table">
+          <tbody>
+            <tr><td>Отмена операций</td><td><span class="status warn">5,2%</span></td></tr>
+            <tr><td>Средняя длительность операции</td><td><b>2,4 ч</b></td></tr>
+            <tr><td>Ожидание плановой операции</td><td><b>9,7 дн.</b></td></tr>
+            <tr><td>Экстренные операции</td><td><b>27%</b></td></tr>
+            <tr><td>Пациенты в ОРИТ после операции</td><td><span class="status danger">8,1%</span></td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+  </main>
+</div>
+</body>
+</html>
